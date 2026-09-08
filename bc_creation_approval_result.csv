@@ -1,0 +1,2 @@
+employee_email,bc_name,bc_code,creation_status,approval_status,creation_error,approval_error
+rajaxor@esaf-dev.esthenos.com,,,FAILED,SKIPPED,"{""errors"": {""latitude"": [""Field may not be null.""], ""longitude"": [""Field may not be null.""]}}",
