@@ -1,6 +1,7 @@
 import requests
 
-LOGIN_URL = "https://gravity-sit-api.esafbank.com/api/v1/token/sourcing"
+# LOGIN_URL = "https://gravity-sit-api.esafbank.com/api/v1/token/sourcing"
+LOGIN_URL = "https://esa-dev-api.esafbank.com/api/v1/token/sourcing"
 
 LOGIN_PAYLOAD = {
     "email": "ajayfo@gravity-sit.esafbank.com",
