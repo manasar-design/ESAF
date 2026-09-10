@@ -12,22 +12,22 @@ from post_update_logger import log_update_to_csv
 # ============================================================
 # CONFIGURATION
 # ============================================================
-# BASE_URL = "https://gravity-sit-api.esafbank.com/web/api/v1"
-BASE_URL = "https://guat-api.esafbank.com/web/api/v1"
+BASE_URL = "https://gravity-sit-api.esafbank.com/web/api/v1"
+# BASE_URL = "https://guat-api.esafbank.com/web/api/v1"
 # BASE_URL = "https://esaf-dev-api.esthenos.com/web/api/v1"
 
 LOGIN_ENDPOINT  = f"{BASE_URL}/organisation/user_login"
 CREATE_ENDPOINT = f"{BASE_URL}/organisation/employees"
 UPDATE_ENDPOINT = f"{BASE_URL}/organisation/employee"
 
-TOTAL_USERS = 20
+TOTAL_USERS = 25
  # Change this to control how many rows are pulled from CSV
 
 LOGIN_PAYLOAD = {
-    "email": "manasa@guat.esafbank.com",    
+    # "email": "manasa@guat.esafbank.com",    
     # "email": "Manasa@esaf-dev.esthenos.com",
-    #  "email": "manasa@gravity-sit.esafbank.com
-    "password": "Esaf@123",
+     "email": "manasa@gravity-sit.esafbank.com",
+     "password": "Esaf@123",
     "verify_two_factor_otp": True,
     "otp": "123456"
 }
@@ -42,15 +42,17 @@ LOGIN_HEADERS = {
 #  HIERARCHY_ID = "657af9f94eef19efa4e1f1ba" #dev_FO
 HIERARCHY_ID = "6a66f8008fb874210dfb21b7"  #  UAT_FO
 # EMAIL_DOMAIN  = "esaf-dev.esthenos.com"
-EMAIL_DOMAIN  = "guat.esafbank.com"
-# EMAIL_DOMAIN = "gravity-sit.esafbank.com"  # ← for SIT
+# EMAIL_DOMAIN  = "guat.esafbank.com"
+EMAIL_DOMAIN = "gravity-sit.esafbank.com"  # ← for SIT
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 CSV_EMAILS           = "emails.csv"
 CSV_EMPLOYEE_IDS     = "employee_ids.csv"
 CSV_CREATE_RESPONSE  = "create_response.csv"
 CSV_EMPLOYEE_DATA    = "employee_data.csv"
 CSV_SUMMARY          = "execution_summary.csv"
-CSV_USERS_DETAILS    = "100_FO_USERS.csv"   # ← source of user data
+CSV_USERS_DETAILS    = os.path.join(BASE_DIR, "..", "DATA", "100_FO_USERS.csv")   # ← source of user data
 
 
 # ============================================================
