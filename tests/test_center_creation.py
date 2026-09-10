@@ -21,7 +21,8 @@ import os
 # ============================================================
 # CONFIGURATION
 # ============================================================
-BASE_URL = "https://esaf-dev-api.esthenos.com"
+# BASE_URL = "https://esaf-dev-api.esthenos.com"
+BASE_URL = "https://gravity-sit-api.esafbank.com"
 # BASE_URL = "https://guat-api.esafbank.com"
 
 
@@ -63,7 +64,9 @@ BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
 # emails_DEV_FO.json doesn't exist yet (only emails_DEV_FO.txt, a single "email"
 # column with no password). Pointing at the .txt for now — load_users() below
 # handles both formats, so this can switch to a .json with real passwords later.
-USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_DEV_FO.txt"))
+# USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_DEV_FO.txt"))
+USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_SIT_FO.txt"))
+# USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_UAT_FO.txt"))
 RESULTS_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "results"))
 CSV_CENTER_DETAILS = os.path.join(RESULTS_DIR, "center_creation_details.csv")
 
@@ -149,7 +152,7 @@ def save_center_result(row: dict):
 
 
 def generate_center_name() -> str:
-    return f"BANGALORE{time.strftime('%d%m')}"
+    return f"BANGALORE{time.strftime('%d%H%M%S')}"
 
 
 def extract_field(response_json: dict, candidates: list, label: str):
