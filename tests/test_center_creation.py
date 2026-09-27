@@ -13,6 +13,7 @@ from playwright.sync_api import sync_playwright
 from main import encode_data, decode_data
 import random
 import string
+import logging
 import time
 import json
 import csv
@@ -22,8 +23,8 @@ import os
 # CONFIGURATION
 # ============================================================
 # BASE_URL = "https://esaf-dev-api.esthenos.com"
-BASE_URL = "https://gravity-sit-api.esafbank.com"
-# BASE_URL = "https://guat-api.esafbank.com"
+# BASE_URL = "https://gravity-sit-api.esafbank.com"
+BASE_URL = "https://guat-api.esafbank.com"
 
 
 # NOTE: login endpoint isn't one of the 3 APIs given. /web/api/v1/... (the
@@ -57,7 +58,7 @@ LOGIN_HEADERS = {
 }
 
 DEFAULT_PASSWORD = "Esaf@123"
-TOTAL_CENTERS = 1  # How many users/centers to process from USERS_FILE — 1 user for now
+TOTAL_CENTERS = 20  # How many users/centers to process from USERS_FILE — 1 user for now
 USERS_OFFSET = 0   # Skip this many users from the top
 
 BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
@@ -65,10 +66,23 @@ BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
 # column with no password). Pointing at the .txt for now — load_users() below
 # handles both formats, so this can switch to a .json with real passwords later.
 # USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_DEV_FO.txt"))
-USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_SIT_FO.txt"))
-# USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_UAT_FO.txt"))
+# USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_SIT_FO.txt"))
+USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_UAT_FO.txt"))
 RESULTS_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "results"))
 CSV_CENTER_DETAILS = os.path.join(RESULTS_DIR, "center_creation_details.csv")
+LOG_FILE = os.path.join(RESULTS_DIR, "center_creation_timing.log")
+
+os.makedirs(RESULTS_DIR, exist_ok=True)
+timing_logger = logging.getLogger("center_creation_timing")
+timing_logger.setLevel(logging.INFO)
+if not timing_logger.handlers:
+    _formatter = logging.Formatter("%(asctime)s | %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+    _file_handler = logging.FileHandler(LOG_FILE, encoding="utf-8")
+    _file_handler.setFormatter(_formatter)
+    _console_handler = logging.StreamHandler()
+    _console_handler.setFormatter(_formatter)
+    timing_logger.addHandler(_file_handler)
+    timing_logger.addHandler(_console_handler)
 
 # --- Response field names used to chain ids between calls. ---
 # Not confirmed against a live response yet: if extraction fails, the
@@ -107,7 +121,7 @@ GEO_SOCIO_DEFAULTS = {
     # "village_name": "Kanigiri"
 }
 
-CENTER_CSV_HEADER = ["username", "center_name", "new_center_id", "center_id", "status"]
+CENTER_CSV_HEADER = ["username", "center_name", "new_center_id", "center_id", "status", "duration_sec"]
 
 
 # ============================================================
@@ -435,25 +449,35 @@ def process_user(request, user: dict) -> dict:
 
     result = {
         "username": username, "center_name": "",
-        "new_center_id": "", "center_id": "", "status": "FAILED"
+        "new_center_id": "", "center_id": "", "status": "FAILED", "duration_sec": ""
     }
 
     print(f"\n{'=' * 50}\n🚀 Processing user: {username}\n{'=' * 50}")
+    user_start = time.time()
+
+    def finish(res: dict) -> dict:
+        duration = round(time.time() - user_start, 2)
+        res["duration_sec"] = duration
+        timing_logger.info(
+            f"user={res['username']} center={res['center_name'] or '-'} "
+            f"status={res['status']} duration_sec={duration}"
+        )
+        return res
 
     auth_headers = perform_login(request, username, password)
     if not auth_headers:
-        return result
+        return finish(result)
 
     center_name = generate_center_name()
     result["center_name"] = center_name
     print(f"  🏷️  Proposed center name: {center_name}")
 
     if not create_meeting_details(request, auth_headers, center_name):
-        return result
+        return finish(result)
 
     meeting_id = get_last_meeting_id(request, auth_headers)
     if not meeting_id:
-        return result
+        return finish(result)
     result["new_center_id"] = meeting_id
     print(f"  🆕 last meeting_id: {meeting_id}")
 
@@ -463,14 +487,14 @@ def process_user(request, user: dict) -> dict:
 
     center_id = create_center(request, center_headers, meeting_id)
     if not center_id:
-        return result
+        return finish(result)
     result["center_id"] = center_id
     print(f"  🏢 center id: {center_id}")
 
     if update_geo_socio_details(request, auth_headers, center_id, center_name):
         result["status"] = "SUCCESS"
 
-    return result
+    return finish(result)
 
 
 # ============================================================
@@ -488,10 +512,10 @@ def print_summary(results: list):
     print(f"  ❌ Failed  : {failed}")
     print("=" * 50)
 
-    print(f"\n  {'Username':<35} {'Center Name':<40} {'Status':<10}")
-    print(f"  {'-' * 90}")
+    print(f"\n  {'Username':<35} {'Center Name':<40} {'Status':<10} {'Duration(s)':<10}")
+    print(f"  {'-' * 100}")
     for r in results:
-        print(f"  {r['username']:<35} {r['center_name']:<40} {r['status']:<10}")
+        print(f"  {r['username']:<35} {r['center_name']:<40} {r['status']:<10} {r.get('duration_sec', ''):<10}")
 
 
 # ============================================================

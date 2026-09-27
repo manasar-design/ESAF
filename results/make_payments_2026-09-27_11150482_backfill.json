@@ -1,0 +1,84 @@
+{
+    "timestamp": "2026-09-27 (backfilled from run log)",
+    "username": "shwetafo@guat.esafbank.com",
+    "center_id": "11150482",
+    "endpoint": "https://guat-api.esafbank.com/api/v1/make-payments",
+    "submitted": true,
+    "status": 200,
+    "request_payload": {
+        "group_payments": [
+            {
+                "center_id": "11150482",
+                "latitude": 0,
+                "longitude": 0,
+                "payment_done_date": "",
+                "payment_due_date": "2026-09-27",
+                "saving_info": [],
+                "individual_payment": [
+                    {
+                        "group_id": "",
+                        "loan_id": "1020100007129231",
+                        "application_id": "1020100007129231",
+                        "payment_id": "",
+                        "mobile_number": "9611771650",
+                        "total_collection": 6750.0,
+                        "is_attended": true,
+                        "absent_reason": "",
+                        "is_advance_collection": false,
+                        "payment_mode": "CASH",
+                        "ptp_info": {
+                            "ptp_scheduled_on": "",
+                            "remarks": ""
+                        }
+                    },
+                    {
+                        "group_id": "",
+                        "loan_id": "2020100003923321",
+                        "application_id": "2020100003923321",
+                        "payment_id": "",
+                        "mobile_number": "9895076638",
+                        "total_collection": 14950.0,
+                        "is_attended": true,
+                        "absent_reason": "",
+                        "is_advance_collection": false,
+                        "payment_mode": "CASH",
+                        "ptp_info": {
+                            "ptp_scheduled_on": "",
+                            "remarks": ""
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "response_body": {
+        "applications_status": [
+            {
+                "application_id": "1020100007129231",
+                "center_id": "11150482",
+                "center_name": "KAVERI",
+                "collection_date": "2026-09-27",
+                "customer_name": "Mrs SURYA S SATHEESH",
+                "group_id": null,
+                "is_successful": true,
+                "message": "Update successful"
+            },
+            {
+                "application_id": "2020100003923321",
+                "center_id": "11150482",
+                "center_name": "KAVERI",
+                "collection_date": "2026-09-27",
+                "customer_name": "Mrs VISMAYAKV .",
+                "group_id": null,
+                "is_successful": true,
+                "message": "Update successful"
+            }
+        ],
+        "errors": {
+            "group_errors": []
+        },
+        "message": "Collection for KAVERI is submitted successfully",
+        "remittance_id": "REM26092700054",
+        "success": true
+    }
+}

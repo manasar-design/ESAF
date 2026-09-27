@@ -50,7 +50,7 @@ CSV_EMPLOYEE_IDS     = "employee_ids.csv"
 CSV_CREATE_RESPONSE  = "create_response.csv"
 CSV_EMPLOYEE_DATA    = "employee_data.csv"
 CSV_SUMMARY          = "execution_summary.csv"
-CSV_USERS_DETAILS    = "100_FO_USERS.csv"   # ← source of user data
+CSV_USERS_DETAILS    = "../DATA/100_FO_USERS.csv"   # ← source of user data
 
 
 # ============================================================
