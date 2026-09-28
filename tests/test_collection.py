@@ -7,11 +7,9 @@ Mobile collection flow for one FO user:
   4. POST <collection submit API>                       -> built from step 3's data (TODO)
 """
 from playwright.sync_api import sync_playwright
-from test_center_creation import (
-    BASE_URL, DEFAULT_PASSWORD, ENCRYPT_CENTER_PAYLOADS, RESULTS_DIR,
-    load_users, perform_login, call_get_api, call_api, extract_field,
-)
+from main import encode_data, decode_data
 import contextlib
+import csv
 import io
 import json
 import os
@@ -20,6 +18,36 @@ import time
 # ============================================================
 # CONFIGURATION
 # ============================================================
+# BASE_URL = "https://esaf-dev-api.esthenos.com"
+# BASE_URL = "https://gravity-sit-api.esafbank.com"
+BASE_URL = "https://guat-api.esafbank.com"
+
+LOGIN_ENDPOINT = f"{BASE_URL}/api/v1/token/sourcing"
+
+# Login is always AES-encrypted; this controls the collection API payloads.
+ENCRYPT_PAYLOADS = True
+
+LOGIN_HEADERS = {
+    "channel": "mobile",
+    "device-type": "android",
+    "app-version": "2.0.6-SIT",
+    "Content-Type": "text/plain",
+    "X-fos-APKVERSION": "1.0.7-DEBUG",
+    "X-fos-FB-token": "fdcAHNg8Qy6YioQ1u-1IFX:APA91bHzWhQYE53zA-fXMEB0ydF2U9cNsh",
+    "LATITUDE": "12.9646815",
+    "LONGITUDE": "77.6439036",
+    "device-mac-id": "f2166c84024b7977"
+}
+
+DEFAULT_PASSWORD = "Esaf@123"
+USERS_OFFSET = 0   # Skip this many users from the top
+
+BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
+# USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_DEV_FO.txt"))
+# USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_SIT_FO.txt"))
+USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_UAT_FO.txt"))
+RESULTS_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "results"))
+
 COLLECTION_DATE = time.strftime("%Y-%m-%d")  # e.g. 2026-09-27
 LOAN_TYPE = "center"
 TOTAL_USERS = 1
@@ -54,6 +82,198 @@ def find_list(resp_json):
                 if nested:
                     return nested
     return None
+
+
+# ============================================================
+# CSV / DATA HELPERS
+# ============================================================
+def load_users(limit: int) -> list:
+    """
+    Supports two formats:
+      - .json: a list of {"username": ..., "password": ...} objects
+      - .txt/.csv: a single "email" column, one address per line — each
+        row becomes {"username": email, "password": DEFAULT_PASSWORD}
+    """
+    if not os.path.exists(USERS_FILE):
+        raise FileNotFoundError(f"❌ Users file not found: {USERS_FILE}")
+
+    if USERS_FILE.endswith(".json"):
+        with open(USERS_FILE, "r", encoding="utf-8") as f:
+            users = json.load(f)
+    else:
+        with open(USERS_FILE, "r", encoding="utf-8", newline="") as f:
+            reader = csv.DictReader(f)
+            users = [
+                {"username": row["email"].strip(), "password": DEFAULT_PASSWORD}
+                for row in reader
+                if row.get("email", "").strip()
+            ]
+
+    if not users:
+        raise ValueError(f"❌ No users found in {USERS_FILE}")
+
+    return users[USERS_OFFSET:USERS_OFFSET + limit]
+
+
+def extract_field(response_json: dict, candidates: list, label: str):
+    """
+    Look for the first matching key among `candidates`, checking the
+    top level and common nested containers ("data", "result").
+    """
+    if not isinstance(response_json, dict):
+        return None
+
+    containers = [response_json]
+    for nested_key in ("data", "result", "center_details"):
+        nested = response_json.get(nested_key)
+        if isinstance(nested, dict):
+            containers.append(nested)
+
+    for container in containers:
+        for key in candidates:
+            value = container.get(key)
+            if value not in (None, ""):
+                return value
+
+    print(f"  ⚠️  Could not find {label} using keys {candidates}.")
+    print(f"      Full response: {json.dumps(response_json, indent=4)}")
+    return None
+
+
+# ============================================================
+# REQUEST / RESPONSE LOGGING
+# ============================================================
+def log_request(name, method, endpoint, headers, payload=None, encrypted_payload=None):
+    print(f"\n{'─' * 50}")
+    print(f"  📤 REQUEST  →  {name}")
+    print(f"{'─' * 50}")
+    print(f"  Method   : {method}")
+    print(f"  Endpoint : {endpoint}")
+    print(f"\n  📋 Headers:")
+    print(json.dumps(headers, indent=4))
+
+    if payload is not None:
+        print(f"\n  📦 Payload (raw JSON):")
+        print(json.dumps(payload, indent=4))
+
+    if encrypted_payload is not None:
+        preview = encrypted_payload[:80] + "..." if len(encrypted_payload) > 80 else encrypted_payload
+        print(f"\n  🔒 Encrypted Payload ({len(encrypted_payload)} chars):")
+        print(f"  {preview}")
+
+    print(f"{'─' * 50}")
+
+
+def log_api(name: str, status: int, response_text: str, start_time: float):
+    duration = round(time.time() - start_time, 2)
+
+    print(f"\n{'=' * 40}")
+    print(f"  📥 RESPONSE  ←  {name} API")
+    print(f"{'=' * 40}")
+    print(f"  Status     : {status}")
+    print(f"  Time Taken : {duration} sec")
+
+    if not response_text or response_text.strip() == "":
+        print("  ⚠️  Empty response body.")
+        return None, duration
+
+    # 1. Try AES decryption first (in case the backend always encrypts responses).
+    try:
+        decrypted = decode_data(response_text)
+        if decrypted and decrypted.strip():
+            try:
+                parsed = json.loads(decrypted)
+                print("  Response (decrypted JSON):")
+                print(json.dumps(parsed, indent=4))
+                return parsed, duration
+            except json.JSONDecodeError:
+                print(f"  Response (decrypted string): {decrypted}")
+                return {"message": decrypted}, duration
+    except Exception:
+        pass
+
+    # 2. Plain JSON.
+    try:
+        parsed = json.loads(response_text)
+        print("  Response (plain JSON):")
+        print(json.dumps(parsed, indent=4))
+        return parsed, duration
+    except Exception:
+        pass
+
+    # 3. Raw fallback.
+    print(f"  Raw Response : {response_text[:500]}")
+    return None, duration
+
+
+def call_api(request, name: str, endpoint: str, headers: dict, payload: dict, encrypt: bool):
+    body = encode_data(json.dumps(payload)) if encrypt else json.dumps(payload)
+
+    log_request(
+        name=name,
+        method="POST",
+        endpoint=endpoint,
+        headers=headers,
+        payload=payload,
+        encrypted_payload=body if encrypt else None
+    )
+
+    start = time.time()
+    res = request.post(endpoint, headers=headers, data=body)
+    resp_json, _ = log_api(name, res.status, res.text(), start)
+
+    return res, resp_json
+
+
+def call_get_api(request, name: str, endpoint: str, headers: dict):
+    log_request(name=name, method="GET", endpoint=endpoint, headers=headers)
+
+    start = time.time()
+    res = request.get(endpoint, headers=headers)
+    resp_json, _ = log_api(name, res.status, res.text(), start)
+
+    return res, resp_json
+
+
+# ============================================================
+# LOGIN
+# ============================================================
+def perform_login(request, username: str, password: str):
+    payload = {
+        "email": username,
+        "password": password,
+        "verify_two_factor_otp": True,
+        "otp": "123456"
+    }
+
+    # /api/v1/token/sourcing expects an AES-encrypted body (text/plain), same
+    # as the /web/api/v1 admin login — confirmed live: sending plain JSON here
+    # crashes the server with a 500, encrypted gets a real response.
+    res, login_json = call_api(request, "LOGIN", LOGIN_ENDPOINT, LOGIN_HEADERS, payload, encrypt=True)
+
+    if res.status != 200 or not login_json:
+        print(f"  ❌ Login failed for {username}. Status: {res.status}")
+        return None
+
+    # "token" holds the real auth token; "message" is just a status string
+    # (e.g. "token generated") and must not be used as a fallback ahead of it.
+    auth_token = (
+        login_json.get("token")
+        or login_json.get("data", {}).get("token")
+    )
+
+    if not auth_token or not isinstance(auth_token, str) or len(auth_token) < 5:
+        print(f"  ❌ Invalid token for {username}: '{auth_token}'")
+        return None
+
+    print(f"  ✅ Login successful for {username}.")
+
+    content_type = "text/plain" if ENCRYPT_PAYLOADS else "application/json"
+    return {
+        **LOGIN_HEADERS,
+        "Content-Type": content_type,
+        "instance-token": auth_token
+    }
 
 
 # ============================================================
@@ -211,7 +431,7 @@ def make_payments(request, auth_headers: dict, username, center_id, dues: list) 
 
     res, resp_json = call_api(
         request, "MAKE PAYMENTS", MAKE_PAYMENTS_ENDPOINT,
-        auth_headers, payload, encrypt=ENCRYPT_CENTER_PAYLOADS
+        auth_headers, payload, encrypt=ENCRYPT_PAYLOADS
     )
     save_payment_log(username, center_id, payload, res.status, resp_json)
 
