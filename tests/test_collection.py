@@ -59,7 +59,7 @@ MAKE_PAYMENTS_ENDPOINT      = f"{BASE_URL}/api/v1/make-payments"
 PAYMENT_MODE = "CASH"
 # Safety switch: False = only build + print the make-payments payload (dry run).
 # Set True only when you actually want the collection posted.
-SUBMIT_PAYMENTS = True
+SUBMIT_PAYMENTS = False
 # v2/collections has no "loan_id" field — application_id is the loan account
 # number, so it's sent as loan_id too. Change here if the backend expects otherwise.
 LOAN_ID_FIELD = "application_id"

@@ -20,7 +20,7 @@ LOGIN_ENDPOINT  = f"{BASE_URL}/organisation/user_login"
 CREATE_ENDPOINT = f"{BASE_URL}/organisation/employees"
 UPDATE_ENDPOINT = f"{BASE_URL}/organisation/employee"
 
-TOTAL_USERS = 20
+TOTAL_USERS = 9
  # Change this to control how many rows are pulled from CSV
 
 LOGIN_PAYLOAD = {
@@ -39,7 +39,7 @@ LOGIN_HEADERS = {
     "Content-Type": "text/plain"
 }
 
-#  HIERARCHY_ID = "657af9f94eef19efa4e1f1ba" #dev_FO
+# HIERARCHY_ID = "657af9f94eef19efa4e1f1ba" #dev_FO
 HIERARCHY_ID = "6a66f8008fb874210dfb21b7"  #  UAT_FO
 # EMAIL_DOMAIN  = "esaf-dev.esthenos.com"
 EMAIL_DOMAIN  = "guat.esafbank.com"
@@ -257,11 +257,27 @@ def generate_customer_payload(user_row: dict) -> dict:
     return payload
 
 
-def generate_employee_id() -> str:
-    return str(random.randint(100, 999))
+# ESAF employee IDs assigned in order: user 1 -> first ID, user 2 -> second, ...
+ESAF_EMPLOYEE_IDS = [
+    "100084",
+    "101245",
+    "101592",
+    "101693",
+    "102721",
+    "103998",
+    "104284",
+    "105443",
+    "106372",
+]
 
 
-def build_update_payload(data: dict) -> dict:
+def generate_employee_id(user_index: int) -> str:
+    if user_index > len(ESAF_EMPLOYEE_IDS):
+        raise ValueError(f"❌ No ESAF employee ID configured for user {user_index}")
+    return ESAF_EMPLOYEE_IDS[user_index - 1]
+
+
+def build_update_payload(data: dict, user_index: int) -> dict:
     payload = {
         "first_name": data.get("first_name"),
         "last_name": data.get("last_name"),
@@ -282,7 +298,7 @@ def build_update_payload(data: dict) -> dict:
         "is_bc_employee": False,
         "access_bcs": [],
         "credit_officer_id": 0,
-        "esaf_employee_id": generate_employee_id()
+        "esaf_employee_id": generate_employee_id(user_index)
     }
 
     if data.get("salutation"):
@@ -435,7 +451,7 @@ def update_employee(
         print(f"  ❌ No employee_id. Cannot update user {user_index}.")
         return None, 0.0
 
-    update_payload   = build_update_payload(data)
+    update_payload   = build_update_payload(data, user_index)
     encoded_emp_id   = encode_data(json.dumps(employee_id))
     encrypted_update = encode_data(json.dumps(update_payload))
 

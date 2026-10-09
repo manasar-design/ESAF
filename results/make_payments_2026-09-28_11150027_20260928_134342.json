@@ -1,0 +1,55 @@
+{
+    "timestamp": "2026-09-28 13:43:42",
+    "username": "shwetafo@guat.esafbank.com",
+    "center_id": "11150027",
+    "endpoint": "https://guat-api.esafbank.com/api/v1/make-payments",
+    "submitted": false,
+    "status": null,
+    "request_payload": {
+        "group_payments": [
+            {
+                "center_id": "11150027",
+                "latitude": 0,
+                "longitude": 0,
+                "payment_done_date": "",
+                "payment_due_date": "2026-09-28",
+                "saving_info": [],
+                "individual_payment": [
+                    {
+                        "group_id": "",
+                        "loan_id": "2040100002960351",
+                        "application_id": "2040100002960351",
+                        "payment_id": "",
+                        "mobile_number": "7034831359",
+                        "total_collection": 7199.0,
+                        "is_attended": true,
+                        "absent_reason": "",
+                        "is_advance_collection": false,
+                        "payment_mode": "CASH",
+                        "ptp_info": {
+                            "ptp_scheduled_on": "",
+                            "remarks": ""
+                        }
+                    },
+                    {
+                        "group_id": "",
+                        "loan_id": "2040100002985981",
+                        "application_id": "2040100002985981",
+                        "payment_id": "",
+                        "mobile_number": "9747862526",
+                        "total_collection": 4045.0,
+                        "is_attended": true,
+                        "absent_reason": "",
+                        "is_advance_collection": false,
+                        "payment_mode": "CASH",
+                        "ptp_info": {
+                            "ptp_scheduled_on": "",
+                            "remarks": ""
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "response_body": null
+}
