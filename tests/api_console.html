@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mobile API Console</title>
+<style>
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --border: #e2e5ea; --text: #1d2330; --muted: #6b7380;
+  --accent: #2f6fde; --ok: #1f9d55; --warn: #c98a12; --err: #d64545; --code-bg: #f1f3f6;
+  --get: #2f6fde; --post: #1f9d55; --put: #c98a12; --delete: #d64545;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151b; --panel: #1a1e26; --border: #2a303b; --text: #e3e7ee; --muted: #8b93a1;
+    --accent: #5b8ff0; --ok: #3cbf74; --warn: #e0a83a; --err: #ef6a6a; --code-bg: #141820;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--border); }
+header h1 { font-size: 16px; margin: 0 12px 0 0; }
+input, select, textarea, button { font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; }
+textarea { width: 100%; font-family: ui-monospace, Menlo, monospace; font-size: 12px; resize: vertical; }
+button { cursor: pointer; background: var(--accent); color: #fff; border-color: var(--accent); }
+button.ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.pill { padding: 2px 10px; border-radius: 999px; font-size: 12px; border: 1px solid var(--border); color: var(--muted); }
+.pill.on { color: var(--ok); border-color: var(--ok); }
+main { display: grid; grid-template-columns: 340px 1fr; gap: 12px; padding: 12px 16px; }
+@media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+.card h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 10px; }
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+.field label { font-size: 12px; color: var(--muted); }
+.row { display: flex; gap: 6px; align-items: center; }
+.row > * { min-width: 0; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+.stat { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
+.stat b { display: block; font-size: 20px; }
+.stat span { font-size: 12px; color: var(--muted); }
+.flow { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-bottom: 12px; }
+.node { padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--panel); font-size: 12px; cursor: pointer; }
+.node.ok { border-color: var(--ok); } .node.err { border-color: var(--err); color: var(--err); }
+.arrow { color: var(--muted); }
+.wf { display: flex; flex-direction: column; gap: 2px; }
+.wf-row { display: grid; grid-template-columns: 34px 60px minmax(120px, 1.2fr) 56px 2fr 64px; gap: 8px; align-items: center; padding: 5px 6px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.wf-row:hover, .wf-row.sel { background: var(--code-bg); }
+.wf-row .path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.method { font: 600 11px ui-monospace, monospace; }
+.m-GET { color: var(--get); } .m-POST { color: var(--post); } .m-PUT, .m-PATCH { color: var(--put); } .m-DELETE { color: var(--delete); }
+.status { font: 600 12px ui-monospace, monospace; }
+.s-ok { color: var(--ok); } .s-warn { color: var(--warn); } .s-err { color: var(--err); }
+.track { position: relative; height: 10px; background: var(--code-bg); border-radius: 5px; }
+.bar { position: absolute; top: 0; height: 10px; border-radius: 5px; min-width: 3px; }
+.dur { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12px; }
+.detail { margin-top: 12px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 900px) { .detail-grid { grid-template-columns: 1fr; } }
+pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin: 0; overflow: auto; max-height: 460px; font-size: 12px; }
+.muted { color: var(--muted); }
+.empty { padding: 24px; text-align: center; color: var(--muted); }
+.k { color: var(--accent); } .str { color: var(--ok); } .num { color: var(--warn); }
+</style>
+</head>
+<body>
+<header>
+  <h1>📱 Mobile API Console</h1>
+  <select id="env"></select>
+  <input id="email" placeholder="email" size="26">
+  <input id="password" type="password" placeholder="password" value="Esaf@123" size="10">
+  <input id="otp" placeholder="otp" value="123456" size="7">
+  <button id="loginBtn">Login</button>
+  <button id="logoutBtn" class="ghost">Logout</button>
+  <span id="status" class="pill">Not logged in</span>
+</header>
+
+<main>
+  <section>
+    <div class="card">
+      <h2>Request</h2>
+      <div class="field">
+        <label>Preset</label>
+        <select id="preset"></select>
+      </div>
+      <div class="field">
+        <label>Variables</label>
+        <div class="row">
+          <input id="vDate" type="date" title="collection_date">
+          <input id="vCenter" placeholder="center_id" title="center_id">
+        </div>
+      </div>
+      <div class="field">
+        <label>Method & path</label>
+        <div class="row">
+          <select id="method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option></select>
+          <input id="path" style="flex:1" placeholder="/api/v1/...">
+        </div>
+      </div>
+      <div class="field">
+        <label>Body (JSON)</label>
+        <textarea id="body" rows="8" placeholder="{ }"></textarea>
+      </div>
+      <div class="field">
+        <label>Extra headers (JSON)</label>
+        <textarea id="headers" rows="2" placeholder='{"meeting_id": "123"}'></textarea>
+      </div>
+      <div class="row" style="justify-content: space-between;">
+        <label class="row"><input type="checkbox" id="encrypt" checked> AES encrypt body</label>
+        <button id="sendBtn">Send ▶</button>
+      </div>
+      <p id="msg" class="muted" style="min-height: 1.4em; margin: 8px 0 0;"></p>
+    </div>
+  </section>
+
+  <section>
+    <div class="stats">
+      <div class="stat"><b id="stTotal">0</b><span>calls</span></div>
+      <div class="stat"><b id="stOk" class="s-ok">0</b><span>success</span></div>
+      <div class="stat"><b id="stErr" class="s-err">0</b><span>failed</span></div>
+      <div class="stat"><b id="stAvg">–</b><span>avg ms</span></div>
+    </div>
+
+    <div class="card">
+      <div class="row" style="justify-content: space-between; margin-bottom: 8px;">
+        <h2 style="margin: 0;">Call flow</h2>
+        <button id="clearBtn" class="ghost">Clear</button>
+      </div>
+      <div id="flow" class="flow"></div>
+      <div id="wf" class="wf"><div class="empty">Log in to start — every call will appear here.</div></div>
+    </div>
+
+    <div id="detail" class="card detail" hidden>
+      <h2 id="dTitle">Call</h2>
+      <p id="dMeta" class="muted" style="margin-top: 0;"></p>
+      <div class="detail-grid">
+        <div><div class="row" style="justify-content: space-between;"><b>📤 Request</b><button class="ghost" data-copy="req">Copy</button></div><pre id="dReq"></pre></div>
+        <div><div class="row" style="justify-content: space-between;"><b>📥 Response</b><button class="ghost" data-copy="res">Copy</button></div><pre id="dRes"></pre></div>
+      </div>
+      <details style="margin-top: 8px;"><summary class="muted">Headers sent</summary><pre id="dHdr"></pre></details>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const PRESETS = [
+  { name: "Custom", method: "GET", path: "" },
+  { name: "Collection centers", method: "GET", path: "/api/v1/collections/centers?collection_date={date}&loan_type=center" },
+  { name: "Collections for center", method: "GET", path: "/api/v2/collections?collection_date={date}&loan_type=center&center_id={center_id}" },
+  { name: "Meeting list details", method: "GET", path: "/api/v2/meeting-list-details" },
+  { name: "Meeting details update", method: "POST", path: "/api/v2/meeting-details/update", body: {} },
+  { name: "Create center", method: "POST", path: "/api/v1/centers", body: {} },
+  { name: "Make payments", method: "POST", path: "/api/v1/make-payments", body: {} },
+];
+let calls = [], selected = null;
+
+const esc = s => String(s).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+function pretty(v) {
+  if (v === null || v === undefined) return '<span class="muted">(empty)</span>';
+  const json = typeof v === "string" ? v : JSON.stringify(v, null, 2);
+  return esc(json).replace(/("(?:\\.|[^"\\])*")(\s*:)?|\b(-?\d+(?:\.\d+)?)\b/g,
+    (m, s, colon, n) => s ? (colon ? `<span class="k">${s}</span>${colon}` : `<span class="str">${s}</span>`) : `<span class="num">${n}</span>`);
+}
+const statusClass = c => !c.status ? "s-err" : c.status < 300 ? "s-ok" : c.status < 400 ? "s-warn" : "s-err";
+const isOk = c => c.status && c.status < 400;
+const label = c => c.name.length > 28 ? c.name.slice(0, 28) + "…" : c.name;
+
+async function api(path, body) {
+  const res = await fetch(path, body === undefined ? {} : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || res.statusText);
+  return data;
+}
+
+function setState(s) {
+  $("status").textContent = s.logged_in ? `● ${s.user} (${s.env})` : "Not logged in";
+  $("status").classList.toggle("on", s.logged_in);
+}
+
+function render() {
+  const ok = calls.filter(isOk).length;
+  $("stTotal").textContent = calls.length;
+  $("stOk").textContent = ok;
+  $("stErr").textContent = calls.length - ok;
+  $("stAvg").textContent = calls.length ? Math.round(calls.reduce((a, c) => a + c.duration_ms, 0) / calls.length) : "–";
+
+  $("flow").innerHTML = calls.map((c, i) =>
+    `${i ? '<span class="arrow">→</span>' : ""}<span class="node ${isOk(c) ? "ok" : "err"}" data-seq="${c.seq}">${c.seq}. ${esc(label(c))}</span>`).join("");
+
+  if (!calls.length) { $("wf").innerHTML = '<div class="empty">Log in to start — every call will appear here.</div>'; return; }
+  const t0 = Math.min(...calls.map(c => c.started_at));
+  const t1 = Math.max(...calls.map(c => c.started_at + c.duration_ms / 1000));
+  const span = Math.max(t1 - t0, 0.001);
+  $("wf").innerHTML = calls.map(c => {
+    const left = ((c.started_at - t0) / span) * 100;
+    const width = Math.max((c.duration_ms / 1000 / span) * 100, 0.5);
+    const color = isOk(c) ? "var(--ok)" : "var(--err)";
+    const path = c.url.replace(/^https?:\/\/[^/]+/, "");
+    return `<div class="wf-row ${selected === c.seq ? "sel" : ""}" data-seq="${c.seq}" title="${esc(c.url)}">
+      <span class="muted">#${c.seq}</span>
+      <span class="method m-${c.method}">${c.method}</span>
+      <span class="path">${esc(path)}</span>
+      <span class="status ${statusClass(c)}">${c.status || "ERR"}</span>
+      <div class="track"><div class="bar" style="left:${left}%;width:${width}%;background:${color}"></div></div>
+      <span class="dur">${c.duration_ms} ms</span>
+    </div>`;
+  }).join("");
+}
+
+function showDetail(seq) {
+  const c = calls.find(x => x.seq === seq);
+  if (!c) return;
+  selected = seq;
+  $("detail").hidden = false;
+  $("dTitle").textContent = `#${c.seq} ${c.name}`;
+  $("dMeta").textContent = `${c.method} ${c.url} · ${c.status || c.error} · ${c.duration_ms} ms · ${c.time} · ${c.encrypted ? "AES" : "plain"} body`;
+  $("dReq").innerHTML = pretty(c.request);
+  $("dRes").innerHTML = pretty(c.error ? { error: c.error } : c.response);
+  $("dHdr").innerHTML = pretty(c.headers);
+  render();
+}
+
+function applyPreset() {
+  const p = PRESETS[$("preset").value];
+  const path = p.path.replace("{date}", $("vDate").value).replace("{center_id}", $("vCenter").value);
+  $("method").value = p.method;
+  $("path").value = path;
+  $("body").value = p.body ? JSON.stringify(p.body, null, 2) : "";
+}
+
+function parseJSON(text, what) {
+  if (!text.trim()) return undefined;
+  try { return JSON.parse(text); } catch (e) { throw new Error(`${what} is not valid JSON: ${e.message}`); }
+}
+
+async function push(record) {
+  calls.push(record);
+  showDetail(record.seq);
+}
+
+$("loginBtn").onclick = async () => {
+  $("msg").textContent = "Logging in…";
+  try {
+    const { record, state } = await api("/api/login", { env: $("env").value, email: $("email").value.trim(), password: $("password").value, otp: $("otp").value });
+    setState(state); push(record);
+    $("msg").textContent = state.logged_in ? "✅ Logged in" : `❌ Login failed (${record.status || record.error})`;
+  } catch (e) { $("msg").textContent = "❌ " + e.message; }
+};
+$("logoutBtn").onclick = async () => setState((await api("/api/logout", {})).state);
+$("sendBtn").onclick = async () => {
+  $("msg").textContent = "Sending…";
+  try {
+    const name = PRESETS[$("preset").value].name;
+    const { record } = await api("/api/call", {
+      name: name === "Custom" ? undefined : name,
+      method: $("method").value, path: $("path").value.trim(),
+      payload: parseJSON($("body").value, "Body"), headers: parseJSON($("headers").value, "Headers"),
+      encrypt: $("encrypt").checked,
+    });
+    push(record);
+    $("msg").textContent = `${isOk(record) ? "✅" : "❌"} ${record.status || record.error} in ${record.duration_ms} ms`;
+  } catch (e) { $("msg").textContent = "❌ " + e.message; }
+};
+$("clearBtn").onclick = async () => { await api("/api/clear", {}); calls = []; selected = null; $("detail").hidden = true; render(); };
+$("preset").onchange = applyPreset;
+$("vDate").onchange = $("vCenter").oninput = () => { if ($("preset").value !== "0") applyPreset(); };
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-seq]");
+  if (el) showDetail(Number(el.dataset.seq));
+  const copy = e.target.closest("[data-copy]");
+  if (copy) navigator.clipboard.writeText($(copy.dataset.copy === "req" ? "dReq" : "dRes").textContent);
+});
+
+(async () => {
+  PRESETS.forEach((p, i) => $("preset").add(new Option(p.name, i)));
+  $("vDate").value = new Date().toISOString().slice(0, 10);
+  const state = await api("/api/state");
+  Object.keys(state.environments).forEach(k => $("env").add(new Option(k, k)));
+  $("env").value = state.env;
+  setState(state);
+  calls = await api("/api/calls");
+  render();
+})();
+</script>
+</body>
+</html>

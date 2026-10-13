@@ -1,0 +1,7 @@
+username,login,login_ms,dashboard,dashboard_ms,menu,menu_ms,centers,centers_ms,collections,collections_ms,login_resp,center_id,centers_n,customers_total,error
+100011@gravity.esaf.bank.in,403,91,,,,,,,,,"<HTML><HEAD> <TITLE>Access Denied</TITLE> </HEAD><BODY> <H1>Access Denied</H1> You don't have permission to access ""http",,,,login 403
+100014@gravity.esaf.bank.in,403,90,,,,,,,,,"<HTML><HEAD> <TITLE>Access Denied</TITLE> </HEAD><BODY> <H1>Access Denied</H1> You don't have permission to access ""http",,,,login 403
+100004@gravity.esaf.bank.in,403,95,,,,,,,,,"<HTML><HEAD> <TITLE>Access Denied</TITLE> </HEAD><BODY> <H1>Access Denied</H1> You don't have permission to access ""http",,,,login 403
+100015@gravity.esaf.bank.in,403,33,,,,,,,,,"<HTML><HEAD> <TITLE>Access Denied</TITLE> </HEAD><BODY> <H1>Access Denied</H1> You don't have permission to access ""http",,,,login 403
+100019@gravity.esaf.bank.in,403,33,,,,,,,,,"<HTML><HEAD> <TITLE>Access Denied</TITLE> </HEAD><BODY> <H1>Access Denied</H1> You don't have permission to access ""http",,,,login 403
+100020@gravity.esaf.bank.in,403,34,,,,,,,,,"<HTML><HEAD> <TITLE>Access Denied</TITLE> </HEAD><BODY> <H1>Access Denied</H1> You don't have permission to access ""http",,,,login 403

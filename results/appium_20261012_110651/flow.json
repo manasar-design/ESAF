@@ -1,0 +1,1722 @@
+[
+  {
+    "step": 1,
+    "name": "Intro tour",
+    "note": "",
+    "time": "11:07:06",
+    "activity": "com.esthenos.presentation.ui.tour.TourActivity",
+    "screenshot": "step_01.png",
+    "elements": [
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Savings",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Tailormade accounts for your exclusive needs",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Continue",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      }
+    ]
+  },
+  {
+    "step": 2,
+    "name": "Login screen",
+    "note": "",
+    "time": "11:07:12",
+    "activity": "com.esthenos.presentation.ui.login.LoginActivity",
+    "screenshot": "step_02.png",
+    "elements": [
+      {
+        "class": "ImageView",
+        "id": "gravity.esaf.bank.debug:id/deviceInfo",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title",
+        "text": "Log In",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "EditText",
+        "id": "gravity.esaf.bank.debug:id/email",
+        "text": "Username",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "EditText",
+        "id": "gravity.esaf.bank.debug:id/password",
+        "text": "Password",
+        "desc": "",
+        "clickable": true,
+        "password": true
+      },
+      {
+        "class": "ImageButton",
+        "id": "gravity.esaf.bank.debug:id/text_input_end_icon",
+        "text": "",
+        "desc": "Show password",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "Button",
+        "id": "gravity.esaf.bank.debug:id/sign_in_login",
+        "text": "Log In",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/forgot_pass_text",
+        "text": "Forgot password?",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "By using our app, you agree with our",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/tncTextView",
+        "text": "Terms & Conditions",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": " and ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/policyTextView",
+        "text": "Privacy Policy",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/bottom_footer",
+        "text": "ESAF Gravity, v3.1.7-DEBUG",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/server_name",
+        "text": " App Connected to ESAF SIT Server",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Field force automation by",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      }
+    ]
+  },
+  {
+    "step": 3,
+    "name": "Credentials entered",
+    "note": "manasafo",
+    "time": "11:07:16",
+    "activity": "com.esthenos.presentation.ui.login.LoginActivity",
+    "screenshot": "step_03.png",
+    "elements": [
+      {
+        "class": "ImageView",
+        "id": "gravity.esaf.bank.debug:id/deviceInfo",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title",
+        "text": "Log In",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "EditText",
+        "id": "gravity.esaf.bank.debug:id/email",
+        "text": "manasafo",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "EditText",
+        "id": "gravity.esaf.bank.debug:id/password",
+        "text": "Esaf@123",
+        "desc": "",
+        "clickable": true,
+        "password": true
+      },
+      {
+        "class": "ImageButton",
+        "id": "gravity.esaf.bank.debug:id/text_input_end_icon",
+        "text": "",
+        "desc": "Show password",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "Button",
+        "id": "gravity.esaf.bank.debug:id/sign_in_login",
+        "text": "Log In",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/forgot_pass_text",
+        "text": "Forgot password?",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "By using our app, you agree with our",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/tncTextView",
+        "text": "Terms & Conditions",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": " and ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/policyTextView",
+        "text": "Privacy Policy",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/bottom_footer",
+        "text": "ESAF Gravity, v3.1.7-DEBUG",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/server_name",
+        "text": " App Connected to ESAF SIT Server",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Field force automation by",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      }
+    ]
+  },
+  {
+    "step": 4,
+    "name": "After login tap",
+    "note": "",
+    "time": "11:07:27",
+    "activity": "com.esthenos.presentation.ui.home.HomeActivity",
+    "screenshot": "step_04.png",
+    "elements": [
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Good Morning ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Field Officer \u00b7 Manasa R",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Monday, 12 October 2026",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0 Centers active",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "   \u00b7   ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "2 new loans",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Overview",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Today",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Week",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Month",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Custom",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "PORTFOLIO OVERVIEW",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GROUPS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0 centers",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "2",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "NEW LOANS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "This period",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "RENEWALS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Existing",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Loan pipeline",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "1 need action",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Resubmission verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "DV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Center group training",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "CGT \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Group formation",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GF \u00b7 Due today",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "2",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Review \u2192",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "LUC pending",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "LUC \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Home verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "HV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "1",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Business verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "BV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Group recognition test",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GRT \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "E-sign",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Esign \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Document generation",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "doc_generation \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "7",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Collection",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Loan",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Profile",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      }
+    ]
+  },
+  {
+    "step": 5,
+    "name": "Collection APIs",
+    "note": "dashboard=200  menu=200  centers=200  center_id=None  collections=None",
+    "time": "11:07:31",
+    "activity": "com.esthenos.presentation.ui.login.LoginActivity",
+    "screenshot": "step_05.png",
+    "elements": [
+      {
+        "class": "ImageView",
+        "id": "gravity.esaf.bank.debug:id/deviceInfo",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title",
+        "text": "Log In",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "EditText",
+        "id": "gravity.esaf.bank.debug:id/email",
+        "text": "Username",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "EditText",
+        "id": "gravity.esaf.bank.debug:id/password",
+        "text": "Password",
+        "desc": "",
+        "clickable": true,
+        "password": true
+      },
+      {
+        "class": "ImageButton",
+        "id": "gravity.esaf.bank.debug:id/text_input_end_icon",
+        "text": "",
+        "desc": "Show password",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "Button",
+        "id": "gravity.esaf.bank.debug:id/sign_in_login",
+        "text": "Log In",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/forgot_pass_text",
+        "text": "Forgot password?",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "By using our app, you agree with our",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/tncTextView",
+        "text": "Terms & Conditions",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": " and ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/policyTextView",
+        "text": "Privacy Policy",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/bottom_footer",
+        "text": "ESAF Gravity, v3.1.7-DEBUG",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/server_name",
+        "text": " App Connected to ESAF SIT Server",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Field force automation by",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      }
+    ]
+  },
+  {
+    "step": 6,
+    "name": "Login screen",
+    "note": "",
+    "time": "11:07:34",
+    "activity": "com.esthenos.presentation.ui.login.LoginActivity",
+    "screenshot": "step_06.png",
+    "elements": [
+      {
+        "class": "ImageView",
+        "id": "gravity.esaf.bank.debug:id/deviceInfo",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title",
+        "text": "Log In",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "EditText",
+        "id": "gravity.esaf.bank.debug:id/email",
+        "text": "Username",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "EditText",
+        "id": "gravity.esaf.bank.debug:id/password",
+        "text": "Password",
+        "desc": "",
+        "clickable": true,
+        "password": true
+      },
+      {
+        "class": "ImageButton",
+        "id": "gravity.esaf.bank.debug:id/text_input_end_icon",
+        "text": "",
+        "desc": "Show password",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "Button",
+        "id": "gravity.esaf.bank.debug:id/sign_in_login",
+        "text": "Log In",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/forgot_pass_text",
+        "text": "Forgot password?",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "By using our app, you agree with our",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/tncTextView",
+        "text": "Terms & Conditions",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": " and ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/policyTextView",
+        "text": "Privacy Policy",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/bottom_footer",
+        "text": "ESAF Gravity, v3.1.7-DEBUG",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/server_name",
+        "text": " App Connected to ESAF SIT Server",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Field force automation by",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      }
+    ]
+  },
+  {
+    "step": 7,
+    "name": "Credentials entered",
+    "note": "manasafo",
+    "time": "11:07:40",
+    "activity": "com.esthenos.presentation.ui.login.LoginActivity",
+    "screenshot": "step_07.png",
+    "elements": [
+      {
+        "class": "ImageView",
+        "id": "gravity.esaf.bank.debug:id/deviceInfo",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title",
+        "text": "Log In",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "EditText",
+        "id": "gravity.esaf.bank.debug:id/email",
+        "text": "manasafo",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "EditText",
+        "id": "gravity.esaf.bank.debug:id/password",
+        "text": "Esaf@123",
+        "desc": "",
+        "clickable": true,
+        "password": true
+      },
+      {
+        "class": "ImageButton",
+        "id": "gravity.esaf.bank.debug:id/text_input_end_icon",
+        "text": "",
+        "desc": "Show password",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "Button",
+        "id": "gravity.esaf.bank.debug:id/sign_in_login",
+        "text": "Log In",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/forgot_pass_text",
+        "text": "Forgot password?",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "By using our app, you agree with our",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/tncTextView",
+        "text": "Terms & Conditions",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": " and ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/policyTextView",
+        "text": "Privacy Policy",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/bottom_footer",
+        "text": "ESAF Gravity, v3.1.7-DEBUG",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/server_name",
+        "text": " App Connected to ESAF SIT Server",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Field force automation by",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      }
+    ]
+  },
+  {
+    "step": 8,
+    "name": "After login tap",
+    "note": "",
+    "time": "11:07:50",
+    "activity": "com.esthenos.presentation.ui.home.HomeActivity",
+    "screenshot": "step_08.png",
+    "elements": [
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Good Morning ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Field Officer \u00b7 Manasa R",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Monday, 12 October 2026",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0 Centers active",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "   \u00b7   ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "2 new loans",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Overview",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Today",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Week",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Month",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Custom",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "PORTFOLIO OVERVIEW",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GROUPS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0 centers",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "2",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "NEW LOANS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "This period",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "RENEWALS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Existing",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Loan pipeline",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "1 need action",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Resubmission verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "DV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Center group training",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "CGT \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Group formation",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GF \u00b7 Due today",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "2",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Review \u2192",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "LUC pending",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "LUC \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Home verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "HV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "1",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Business verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "BV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Group recognition test",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GRT \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "E-sign",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Esign \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Document generation",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "doc_generation \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "7",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Collection",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Loan",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Profile",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      }
+    ]
+  }
+]

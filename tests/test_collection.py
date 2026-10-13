@@ -20,7 +20,7 @@ import time
 # ============================================================
 # BASE_URL = "https://esaf-dev-api.esthenos.com"
 # BASE_URL = "https://gravity-sit-api.esafbank.com"
-BASE_URL = "https://guat-api.esafbank.com"
+BASE_URL = "https://gravity-api.esaf.bank.in"
 
 LOGIN_ENDPOINT = f"{BASE_URL}/api/v1/token/sourcing"
 
@@ -36,10 +36,12 @@ LOGIN_HEADERS = {
     "X-fos-FB-token": "fdcAHNg8Qy6YioQ1u-1IFX:APA91bHzWhQYE53zA-fXMEB0ydF2U9cNsh",
     "LATITUDE": "12.9646815",
     "LONGITUDE": "77.6439036",
-    "device-mac-id": "f2166c84024b7977"
+    "device-mac-id": "f2166c84024b7977",
+    # The production edge (Akamai) 403s a generic client; the app's UA gets through.
+    "User-Agent": "GravityBank-Android/1.0"
 }
 
-DEFAULT_PASSWORD = "Esaf@123"
+DEFAULT_PASSWORD = "Esaf@12345"
 USERS_OFFSET = 0   # Skip this many users from the top
 
 BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
@@ -50,9 +52,11 @@ RESULTS_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "results"))
 
 COLLECTION_DATE = time.strftime("%Y-%m-%d")  # e.g. 2026-09-27
 LOAN_TYPE = "center"
-TOTAL_USERS = 1
+TOTAL_USERS = 6700
 LIST_ALL_CENTER_CUSTOMERS = True  # print every center's customer list before collecting
 
+COLLECTION_DASHBOARD_ENDPOINT = f"{BASE_URL}/api/v1/collection/dashboard/center"
+COLLECTION_MENU_ENDPOINT      = f"{BASE_URL}/api/v1/collection/menu"
 COLLECTION_CENTERS_ENDPOINT = f"{BASE_URL}/api/v1/collections/centers"
 COLLECTIONS_ENDPOINT        = f"{BASE_URL}/api/v2/collections"
 MAKE_PAYMENTS_ENDPOINT      = f"{BASE_URL}/api/v1/make-payments"
@@ -65,6 +69,7 @@ SUBMIT_PAYMENTS = False
 LOAN_ID_FIELD = "application_id"
 
 CENTER_ID_FIELDS = ["center_id", "id", "_id"]
+LAST_STATUS = {}  # API name -> last HTTP status, filled by call_get_api for run summaries
 LIST_KEYS = ("centers_list", "collections_list", "data", "result", "centers", "center_list", "collections", "list")
 
 
@@ -231,6 +236,7 @@ def call_get_api(request, name: str, endpoint: str, headers: dict):
     start = time.time()
     res = request.get(endpoint, headers=headers)
     resp_json, _ = log_api(name, res.status, res.text(), start)
+    LAST_STATUS[name] = res.status
 
     return res, resp_json
 
@@ -274,6 +280,67 @@ def perform_login(request, username: str, password: str):
         "Content-Type": content_type,
         "instance-token": auth_token
     }
+
+
+# ============================================================
+# COLLECTION DASHBOARD + MENU (called first, same order as the app)
+# ============================================================
+def get_collection_dashboard(request, auth_headers: dict):
+    res, resp_json = call_get_api(request, "COLLECTION DASHBOARD", COLLECTION_DASHBOARD_ENDPOINT, auth_headers)
+    if res.status != 200:
+        print(f"  ❌ collection/dashboard/center failed. Status: {res.status}")
+    return res.status, resp_json
+
+
+def get_collection_menu(request, auth_headers: dict):
+    res, resp_json = call_get_api(request, "COLLECTION MENU", COLLECTION_MENU_ENDPOINT, auth_headers)
+    if res.status != 200:
+        print(f"  ❌ collection/menu failed. Status: {res.status}")
+    return res.status, resp_json
+
+
+def run_collection_sequence(request, auth_headers: dict) -> dict:
+    """All collection GET APIs for one logged-in user, in app order:
+        dashboard -> menu -> collection centers -> v2 collections for EVERY center.
+    Counts total centers and total customers (summed across all centers), and
+    still selects one center's dues for the (dry-run) payment step.
+    A failing dashboard/menu call is logged but doesn't stop the rest."""
+    LAST_STATUS.clear()
+    summary = {"dashboard": None, "menu": None, "centers": None, "collections": None,
+               "total_centers": 0, "total_customers": 0,
+               "center_id": None, "centers_list": [], "per_center": [], "dues": None}
+
+    summary["dashboard"], _ = get_collection_dashboard(request, auth_headers)
+    summary["menu"], _ = get_collection_menu(request, auth_headers)
+
+    centers = get_collection_centers(request, auth_headers)
+    summary["centers"] = LAST_STATUS.get("COLLECTION CENTERS")
+    summary["centers_list"] = centers
+    summary["total_centers"] = len(centers)
+    if not centers:
+        return summary
+
+    # v2/collections for EVERY center: list customers and count them.
+    print(f"\n  🏢 {len(centers)} center(s) for {COLLECTION_DATE}:")
+    total_customers, coll_codes = 0, set()
+    for c in centers:
+        cid = extract_field(c, CENTER_ID_FIELDS, "center_id")
+        name = c.get("center_name") or cid
+        customers = get_center_customers(request, auth_headers, cid)
+        coll_codes.add(LAST_STATUS.get(f"CUSTOMERS {cid}"))
+        total_customers += len(customers)
+        summary["per_center"].append({"center_id": cid, "center_name": name, "customers": len(customers)})
+        print(f"       • {name} ({cid}): {len(customers)} customer(s)")
+    summary["total_customers"] = total_customers
+    summary["collections"] = 200 if coll_codes == {200} else next((s for s in coll_codes if s != 200), None)
+    print(f"\n  📊 Total centers: {len(centers)}  |  Total customers: {total_customers}")
+
+    # Pick one center (least non-zero pending) for the dry-run payment step.
+    center_id = get_collection_center_id(centers)
+    if center_id:
+        summary["center_id"] = center_id
+        summary["dues"] = get_collections(request, auth_headers, center_id)
+    return summary
 
 
 # ============================================================
@@ -363,6 +430,7 @@ def print_all_center_customers(request, auth_headers: dict, centers: list):
         for c in customers:
             print(f"     {c.get('customer_name', ''):<32} cif={c.get('customer_cif_id', ''):<10} "
                   f"app={c.get('application_id') or '-':<17} demand={c.get('total_demand')}")
+    return per_center
 
 
 # ============================================================
@@ -461,20 +529,15 @@ def test_flow():
             if not auth_headers:
                 continue
 
-            centers = get_collection_centers(request, auth_headers)
-            if LIST_ALL_CENTER_CUSTOMERS and centers:
-                print_all_center_customers(request, auth_headers, centers)
+            seq = run_collection_sequence(request, auth_headers)
+            print(f"  📋 dashboard={seq['dashboard']} menu={seq['menu']} centers={seq['centers']} "
+                  f"collections={seq['collections']} "
+                  f"total_centers={seq['total_centers']} total_customers={seq['total_customers']}")
 
-            center_id = get_collection_center_id(centers)
-            if not center_id:
-                continue
-            print(f"  🏢 collection center_id: {center_id}")
-
-            dues = get_collections(request, auth_headers, center_id)
-            if not dues:
+            if not seq["center_id"] or not seq["dues"]:
                 continue
 
-            make_payments(request, auth_headers, username, center_id, dues)
+            make_payments(request, auth_headers, username, seq["center_id"], seq["dues"])
 
         request.dispose()
 

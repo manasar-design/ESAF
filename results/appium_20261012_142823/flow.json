@@ -1,0 +1,1078 @@
+[
+  {
+    "step": 1,
+    "name": "Collection APIs",
+    "note": "dashboard=200  menu=200  centers=200  center_id=None  collections=None  customers=None  payments=None",
+    "time": "14:28:37",
+    "activity": "com.esthenos.presentation.ui.home.HomeActivity",
+    "screenshot": "step_01.png",
+    "elements": [
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Good Afternoon ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Field Officer \u00b7 Shweta FO",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Monday, 12 October 2026",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0 Centers active",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "   \u00b7   ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "2009 new loans",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Overview",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Today",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Week",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Month",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Custom",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "PORTFOLIO OVERVIEW",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GROUPS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0 centers",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "2009",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "NEW LOANS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "This period",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "RENEWALS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Existing",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Loan pipeline",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0 need action",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Resubmission verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "DV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Center group training",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "CGT \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Group formation",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GF \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "LUC pending",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "LUC \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Home verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "HV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Business verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "BV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Group recognition test",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GRT \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "E-sign",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Esign \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Document generation",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "doc_generation \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "1",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Collection",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Loan",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Profile",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      }
+    ]
+  },
+  {
+    "step": 2,
+    "name": "Already logged in",
+    "note": "Skipped login \u2014 app kept its session",
+    "time": "14:28:40",
+    "activity": "com.esthenos.presentation.ui.home.HomeActivity",
+    "screenshot": "step_02.png",
+    "elements": [
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Good Afternoon ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Field Officer \u00b7 Shweta FO",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Monday, 12 October 2026",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0 Centers active",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "   \u00b7   ",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "2009 new loans",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Overview",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Today",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Week",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Month",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Custom",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "PORTFOLIO OVERVIEW",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GROUPS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0 centers",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "2009",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "NEW LOANS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "This period",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "RENEWALS",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Existing",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Loan pipeline",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0 need action",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Resubmission verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "DV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Center group training",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "CGT \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Group formation",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GF \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "LUC pending",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "LUC \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Home verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "HV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Business verification",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "BV \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Group recognition test",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "GRT \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "E-sign",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Esign \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "0",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Document generation",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "doc_generation \u00b7 All reviewed",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "1",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "",
+        "text": "Clear",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Collection",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Loan",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      },
+      {
+        "class": "FrameLayout",
+        "id": "gravity.esaf.bank.debug:id/fl",
+        "text": "",
+        "desc": "",
+        "clickable": true,
+        "password": false
+      },
+      {
+        "class": "TextView",
+        "id": "gravity.esaf.bank.debug:id/title_txt",
+        "text": "Profile",
+        "desc": "",
+        "clickable": false,
+        "password": false
+      }
+    ]
+  }
+]
