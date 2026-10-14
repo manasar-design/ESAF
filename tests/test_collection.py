@@ -1,18 +1,26 @@
 # test_collection.py
 """
-Mobile collection flow for one FO user:
-  1. Login                                              -> auth token
-  2. GET /api/v1/collections/centers                    -> pick a center_id
-  3. GET /api/v2/collections?center_id=...              -> collection data for that center
-  4. POST <collection submit API>                       -> built from step 3's data (TODO)
+Mobile collection flow for one FO user (same order as the app):
+  1. POST /api/v1/token/sourcing                        -> auth token
+  2. GET  /api/v1/mobile/profile
+  3. GET  /api/v1/master_ref_data
+  4. GET  /api/v1/dashboard?type=default&start_date=&end_date=   (called twice, as the app does)
+  5. GET  /api/v1/collection/dashboard/center
+  6. GET  /api/v1/collection/menu
+  7. GET  /api/v1/collections/centers?collection_date=...&loan_type=center   -> pick a center_id
+  8. GET  /api/v2/collections?collection_date=...&modified_after=...&loan_type=center&center_id=...
+  9. POST /api/v1/make-payments                         -> built from step 8's data
+ 10. GET  /api/v1/cash_remittance?remittance_id=...     -> status of the remittance just created
 """
 from playwright.sync_api import sync_playwright
 from main import encode_data, decode_data
 import contextlib
 import csv
+import glob
 import io
 import json
 import os
+import threading
 import time
 
 # ============================================================
@@ -41,6 +49,7 @@ LOGIN_HEADERS = {
     "User-Agent": "GravityBank-Android/1.0"
 }
 
+# DEFAULT_PASSWORD = "Esaf@123"
 DEFAULT_PASSWORD = "Esaf@12345"
 USERS_OFFSET = 0   # Skip this many users from the top
 
@@ -52,18 +61,21 @@ RESULTS_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "results"))
 
 COLLECTION_DATE = time.strftime("%Y-%m-%d")  # e.g. 2026-09-27
 LOAN_TYPE = "center"
-TOTAL_USERS = 6700
+TOTAL_USERS = 5000
 LIST_ALL_CENTER_CUSTOMERS = True  # print every center's customer list before collecting
 
+MOBILE_PROFILE_ENDPOINT       = f"{BASE_URL}/api/v1/mobile/profile"
+MASTER_REF_DATA_ENDPOINT      = f"{BASE_URL}/api/v1/master_ref_data"
+DASHBOARD_ENDPOINT            = f"{BASE_URL}/api/v1/dashboard?type=default&start_date=&end_date="
 COLLECTION_DASHBOARD_ENDPOINT = f"{BASE_URL}/api/v1/collection/dashboard/center"
 COLLECTION_MENU_ENDPOINT      = f"{BASE_URL}/api/v1/collection/menu"
 COLLECTION_CENTERS_ENDPOINT = f"{BASE_URL}/api/v1/collections/centers"
 COLLECTIONS_ENDPOINT        = f"{BASE_URL}/api/v2/collections"
 MAKE_PAYMENTS_ENDPOINT      = f"{BASE_URL}/api/v1/make-payments"
 PAYMENT_MODE = "CASH"
-# Safety switch: False = only build + print the make-payments payload (dry run).
+# Safety switch, False by default: only build + print the make-payments payload (dry run).
 # Set True only when you actually want the collection posted.
-SUBMIT_PAYMENTS = False
+SUBMIT_PAYMENTS = True
 # v2/collections has no "loan_id" field — application_id is the loan account
 # number, so it's sent as loan_id too. Change here if the backend expects otherwise.
 LOAN_ID_FIELD = "application_id"
@@ -71,6 +83,12 @@ LOAN_ID_FIELD = "application_id"
 CENTER_ID_FIELDS = ["center_id", "id", "_id"]
 LAST_STATUS = {}  # API name -> last HTTP status, filled by call_get_api for run summaries
 LIST_KEYS = ("centers_list", "collections_list", "data", "result", "centers", "center_list", "collections", "list")
+
+
+def modified_after() -> str:
+    """Python equivalent of the app's Calendar.getInstance().timeInMillis.toString():
+    current epoch time in milliseconds."""
+    return str(int(time.time() * 1000))
 
 
 def find_list(resp_json):
@@ -283,7 +301,31 @@ def perform_login(request, username: str, password: str):
 
 
 # ============================================================
-# COLLECTION DASHBOARD + MENU (called first, same order as the app)
+# PROFILE / MASTER DATA / DASHBOARD (called right after login, same order as the app)
+# ============================================================
+def get_mobile_profile(request, auth_headers: dict):
+    res, resp_json = call_get_api(request, "MOBILE PROFILE", MOBILE_PROFILE_ENDPOINT, auth_headers)
+    if res.status != 200:
+        print(f"  ❌ mobile/profile failed. Status: {res.status}")
+    return res.status, resp_json
+
+
+def get_master_ref_data(request, auth_headers: dict):
+    res, resp_json = call_get_api(request, "MASTER REF DATA", MASTER_REF_DATA_ENDPOINT, auth_headers)
+    if res.status != 200:
+        print(f"  ❌ master_ref_data failed. Status: {res.status}")
+    return res.status, resp_json
+
+
+def get_home_dashboard(request, auth_headers: dict, name: str = "HOME DASHBOARD"):
+    res, resp_json = call_get_api(request, name, DASHBOARD_ENDPOINT, auth_headers)
+    if res.status != 200:
+        print(f"  ❌ dashboard?type=default failed. Status: {res.status}")
+    return res.status, resp_json
+
+
+# ============================================================
+# COLLECTION DASHBOARD + MENU
 # ============================================================
 def get_collection_dashboard(request, auth_headers: dict):
     res, resp_json = call_get_api(request, "COLLECTION DASHBOARD", COLLECTION_DASHBOARD_ENDPOINT, auth_headers)
@@ -301,15 +343,21 @@ def get_collection_menu(request, auth_headers: dict):
 
 def run_collection_sequence(request, auth_headers: dict) -> dict:
     """All collection GET APIs for one logged-in user, in app order:
-        dashboard -> menu -> collection centers -> v2 collections for EVERY center.
+        profile -> master_ref_data -> home dashboard (x2) -> collection dashboard
+        -> menu -> collection centers -> v2 collections for EVERY center.
     Counts total centers and total customers (summed across all centers), and
     still selects one center's dues for the (dry-run) payment step.
-    A failing dashboard/menu call is logged but doesn't stop the rest."""
+    A failing profile/master/dashboard/menu call is logged but doesn't stop the rest."""
     LAST_STATUS.clear()
-    summary = {"dashboard": None, "menu": None, "centers": None, "collections": None,
+    summary = {"profile": None, "master_ref_data": None, "home_dashboard": None,
+               "dashboard": None, "menu": None, "centers": None, "collections": None,
                "total_centers": 0, "total_customers": 0,
                "center_id": None, "centers_list": [], "per_center": [], "dues": None}
 
+    summary["profile"], _ = get_mobile_profile(request, auth_headers)
+    summary["master_ref_data"], _ = get_master_ref_data(request, auth_headers)
+    get_home_dashboard(request, auth_headers, "HOME DASHBOARD 1")
+    summary["home_dashboard"], _ = get_home_dashboard(request, auth_headers, "HOME DASHBOARD 2")
     summary["dashboard"], _ = get_collection_dashboard(request, auth_headers)
     summary["menu"], _ = get_collection_menu(request, auth_headers)
 
@@ -335,11 +383,18 @@ def run_collection_sequence(request, auth_headers: dict) -> dict:
     summary["collections"] = 200 if coll_codes == {200} else next((s for s in coll_codes if s != 200), None)
     print(f"\n  📊 Total centers: {len(centers)}  |  Total customers: {total_customers}")
 
-    # Pick one center (least non-zero pending) for the dry-run payment step.
-    center_id = get_collection_center_id(centers)
-    if center_id:
-        summary["center_id"] = center_id
-        summary["dues"] = get_collections(request, auth_headers, center_id)
+    # Least-demand pending center that still has loans not paid today
+    # -> its v2/collections dues -> make-payments.
+    for center in pending_centers_by_demand(centers):
+        center_id = extract_field(center, CENTER_ID_FIELDS, "collection center_id")
+        print(f"  🎯 Least demand center: {center.get('center_name')} "
+              f"(demand {center.get('total_demand')}, pending {center.get('pending_collection')})")
+        dues = get_collections(request, auth_headers, center_id)
+        if dues:
+            summary["center_id"], summary["dues"] = center_id, dues
+            break
+    else:
+        print(f"  ⚠️  No center with unpaid demand on {COLLECTION_DATE}.")
     return summary
 
 
@@ -360,17 +415,28 @@ def get_collection_centers(request, auth_headers: dict) -> list:
     return centers
 
 
-def get_collection_center_id(centers: list):
-    # Skip centers already fully collected today.
-    pending = [c for c in centers if (c.get("pending_collection") or 0) > 0]
-    if not pending:
-        print(f"  ⚠️  All centers already fully collected on {COLLECTION_DATE}.")
-        return None
+def pending_centers_by_demand(centers: list) -> list:
+    """Centers that can be paid, smallest total_demand first: skip centers with
+    nothing pending (already collected) or no demand."""
+    pending = [c for c in centers
+               if (c.get("pending_collection") or 0) > 0 and (c.get("total_demand") or 0) > 0]
+    return sorted(pending, key=lambda c: c["total_demand"])
 
-    # Pick the center with the smallest non-zero pending amount.
-    smallest = min(pending, key=lambda c: c["pending_collection"])
-    print(f"  🎯 Least pending center: {smallest.get('center_name')} ({smallest.get('pending_collection')})")
-    return extract_field(smallest, CENTER_ID_FIELDS, "collection center_id")
+
+def pick_least_demand_center(centers: list):
+    """Center to pay: the pending center with the smallest non-zero total_demand."""
+    ordered = pending_centers_by_demand(centers)
+    return ordered[0] if ordered else None
+
+
+def get_collection_center_id(centers: list):
+    center = pick_least_demand_center(centers)
+    if not center:
+        print(f"  ⚠️  No center with pending demand on {COLLECTION_DATE}.")
+        return None
+    print(f"  🎯 Least demand center: {center.get('center_name')} "
+          f"(demand {center.get('total_demand')}, pending {center.get('pending_collection')})")
+    return extract_field(center, CENTER_ID_FIELDS, "collection center_id")
 
 
 # ============================================================
@@ -379,6 +445,7 @@ def get_collection_center_id(centers: list):
 def get_collections(request, auth_headers: dict, center_id):
     endpoint = (
         f"{COLLECTIONS_ENDPOINT}?collection_date={COLLECTION_DATE}"
+        f"&modified_after={modified_after()}"
         f"&loan_type={LOAN_TYPE}&center_id={center_id}"
     )
     res, resp_json = call_get_api(request, "COLLECTIONS", endpoint, auth_headers)
@@ -396,8 +463,9 @@ def get_collections(request, auth_headers: dict, center_id):
             continue  # the API sometimes repeats a loan row; never pay one twice
         seen.add(app_id)
         dues.append(c)
+    dues = unpaid_dues(dues)
     if not dues:
-        print(f"  ⚠️  No collectible loans in center {center_id}.")
+        print(f"  ⚠️  No collectible loans in center {center_id} that aren't already paid today.")
         return None
 
     print(f"\n  💰 {len(dues)} collectible loan(s) in center {center_id}:")
@@ -410,6 +478,7 @@ def get_collections(request, auth_headers: dict, center_id):
 def get_center_customers(request, auth_headers: dict, center_id) -> list:
     endpoint = (
         f"{COLLECTIONS_ENDPOINT}?collection_date={COLLECTION_DATE}"
+        f"&modified_after={modified_after()}"
         f"&loan_type={LOAN_TYPE}&center_id={center_id}"
     )
     res, resp_json = call_get_api(request, f"CUSTOMERS {center_id}", endpoint, auth_headers)
@@ -465,24 +534,107 @@ def build_payment_payload(center_id, dues: list) -> dict:
     }
 
 
-def save_payment_log(username, center_id, payload: dict, status=None, response=None):
-    """Write the make-payments request payload + response body to results/ as JSON."""
+# ============================================================
+# PAID LOANS RECORD — never pay the same loan twice in one day
+# ============================================================
+# The backend accepts a second collection for a loan already paid today (it
+# re-issues a new collection_object_id), so we keep our own per-day record of
+# every application_id we've paid: results/paid_loans_<date>.json.
+_PAID_LOCK = threading.Lock()
+_IN_FLIGHT = set()  # application_ids claimed by a payment still in progress (load test threads)
+
+
+def paid_loans_path(date: str = COLLECTION_DATE) -> str:
+    return os.path.join(RESULTS_DIR, f"paid_loans_{date}.json")
+
+
+def _seed_paid_loans(date: str) -> dict:
+    """Build the record from the day's make_payments_<date>_*.json logs
+    (loans the server confirmed with is_successful)."""
+    paid = {}
+    for path in sorted(glob.glob(os.path.join(RESULTS_DIR, f"make_payments_{date}_*.json"))):
+        try:
+            with open(path) as f:
+                log = json.load(f)
+        except Exception:
+            continue
+        resp = log.get("response_body") or {}
+        if log.get("status") not in (200, 201) or not isinstance(resp, dict):
+            continue
+        for a in resp.get("applications_status") or []:
+            if a.get("is_successful") and a.get("application_id"):
+                paid[a["application_id"]] = {
+                    "center_id": a.get("center_id"), "customer_name": a.get("customer_name"),
+                    "remittance_id": a.get("remittance_id"), "username": log.get("username"),
+                    "paid_at": log.get("timestamp"), "source": os.path.basename(path),
+                }
+    return paid
+
+
+def load_paid_loans(date: str = COLLECTION_DATE) -> dict:
+    """application_id -> payment info for every loan already paid on `date`."""
+    path = paid_loans_path(date)
+    if os.path.exists(path):
+        with open(path) as f:
+            return json.load(f)
+    paid = _seed_paid_loans(date)
     os.makedirs(RESULTS_DIR, exist_ok=True)
-    stamp = time.strftime("%Y%m%d_%H%M%S")
-    path = os.path.join(RESULTS_DIR, f"make_payments_{COLLECTION_DATE}_{center_id}_{stamp}.json")
-    record = {
-        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "username": username,
-        "center_id": str(center_id),
-        "endpoint": MAKE_PAYMENTS_ENDPOINT,
-        "submitted": SUBMIT_PAYMENTS,
-        "status": status,
-        "request_payload": payload,
-        "response_body": response,
-    }
     with open(path, "w") as f:
-        json.dump(record, f, indent=4)
-    print(f"  💾 Saved make-payments log: {path}")
+        json.dump(paid, f, indent=4)
+    return paid
+
+
+def unpaid_dues(dues: list, date: str = COLLECTION_DATE) -> list:
+    """Drop loans already paid today (or being paid right now by another thread)."""
+    with _PAID_LOCK:
+        paid = load_paid_loans(date)
+    skipped = [c for c in dues if c.get("application_id") in paid or c.get("application_id") in _IN_FLIGHT]
+    for c in skipped:
+        info = paid.get(c["application_id"], {})
+        print(f"  ⏭️  Skipping {c.get('customer_name')} app={c['application_id']}: already paid today "
+              f"({info.get('remittance_id') or 'in progress'})")
+    return [c for c in dues if c not in skipped]
+
+
+def claim_dues(dues: list, date: str = COLLECTION_DATE) -> list:
+    """Atomically reserve unpaid dues for one payment; returns only the ones reserved."""
+    with _PAID_LOCK:
+        paid = load_paid_loans(date)
+        claimed = [c for c in dues if c["application_id"] not in paid and c["application_id"] not in _IN_FLIGHT]
+        _IN_FLIGHT.update(c["application_id"] for c in claimed)
+    return claimed
+
+
+def record_payment(dues: list, username, center_id, status, response, date: str = COLLECTION_DATE):
+    """Add the server-confirmed loans to the paid record and release the claim.
+    If no HTTP status came back (timeout / connection drop) the request may still
+    have gone through, so those loans are recorded as 'uncertain' and not retried."""
+    stamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    with _PAID_LOCK:
+        paid = load_paid_loans(date)
+        resp = response if isinstance(response, dict) else {}
+        for a in resp.get("applications_status") or []:
+            if a.get("is_successful") and a.get("application_id"):
+                paid[a["application_id"]] = {
+                    "center_id": str(center_id), "customer_name": a.get("customer_name"),
+                    "remittance_id": a.get("remittance_id"), "username": username, "paid_at": stamp,
+                }
+        if status is None:
+            for c in dues:
+                paid.setdefault(c["application_id"], {
+                    "center_id": str(center_id), "customer_name": c.get("customer_name"),
+                    "remittance_id": None, "username": username, "paid_at": stamp,
+                    "uncertain": True,
+                })
+        with open(paid_loans_path(date), "w") as f:
+            json.dump(paid, f, indent=4)
+        _IN_FLIGHT.difference_update(c["application_id"] for c in dues)
+
+
+def save_payment_log(username, center_id, payload: dict, status=None, response=None, submitted=None):
+    """Make-payments per-user logs are NOT saved to disk (disabled by request).
+    The paid-loans guard (record_payment) still records what was paid."""
+    return
 
 
 def make_payments(request, auth_headers: dict, username, center_id, dues: list) -> bool:
@@ -497,11 +649,23 @@ def make_payments(request, auth_headers: dict, username, center_id, dues: list) 
         save_payment_log(username, center_id, payload)
         return False
 
-    res, resp_json = call_api(
-        request, "MAKE PAYMENTS", MAKE_PAYMENTS_ENDPOINT,
-        auth_headers, payload, encrypt=ENCRYPT_PAYLOADS
-    )
+    dues = claim_dues(dues)
+    if not dues:
+        print(f"  ⏭️  Every loan in center {center_id} is already paid today — nothing submitted.")
+        return False
+    payload = build_payment_payload(center_id, dues)
+    total = sum(c["total_demand"] for c in dues)
+
+    try:
+        res, resp_json = call_api(
+            request, "MAKE PAYMENTS", MAKE_PAYMENTS_ENDPOINT,
+            auth_headers, payload, encrypt=ENCRYPT_PAYLOADS
+        )
+    except Exception:
+        record_payment(dues, username, center_id, None, None)
+        raise
     save_payment_log(username, center_id, payload, res.status, resp_json)
+    record_payment(dues, username, center_id, res.status, resp_json)
 
     if res.status not in (200, 201) or not resp_json or resp_json.get("success") is False:
         print(f"  ❌ make-payments failed. Status: {res.status}. Message: {resp_json.get('message') if resp_json else None}")
@@ -530,14 +694,16 @@ def test_flow():
                 continue
 
             seq = run_collection_sequence(request, auth_headers)
-            print(f"  📋 dashboard={seq['dashboard']} menu={seq['menu']} centers={seq['centers']} "
+            print(f"  📋 profile={seq['profile']} master_ref_data={seq['master_ref_data']} "
+                  f"home_dashboard={seq['home_dashboard']} dashboard={seq['dashboard']} menu={seq['menu']} centers={seq['centers']} "
                   f"collections={seq['collections']} "
                   f"total_centers={seq['total_centers']} total_customers={seq['total_customers']}")
 
             if not seq["center_id"] or not seq["dues"]:
                 continue
 
-            make_payments(request, auth_headers, username, seq["center_id"], seq["dues"])
+            # ↓↓ PAYMENT TOGGLE: uncomment the next line to SUBMIT the collection; comment it for a DRY RUN (GET APIs only) ↓↓
+            # make_payments(request, auth_headers, username, seq["center_id"], seq["dues"])
 
         request.dispose()
 
