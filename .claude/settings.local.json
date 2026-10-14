@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(tests/load_test.py)",
+      "Edit(tests/test_collection.py)",
+      "Bash(python3 -:*)",
+      "Bash(../venv/bin/python load_test.py:*)",
+      "Bash(../venv/bin/python test_collection.py:*)"
+    ]
+  }
+}

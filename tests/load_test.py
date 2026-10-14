@@ -10,8 +10,8 @@ Per user, in order, the same calls the app makes:
     5. GET  /api/v2/collections?...&center_id=<first center>   (only if a center is returned)
 
 Read-only: it never calls make-payments. For each user it records the status
-code and milliseconds of every call; at the end it prints latency percentiles
-and status-code tallies and writes results/load_test_<ts>.csv.
+code and milliseconds of every call; at the end it prints only the total-run
+summary (latency percentiles and status-code tallies). Nothing is saved to disk.
 
     ../venv/bin/python load_test.py --concurrency 20 --limit 200
     ../venv/bin/python load_test.py --concurrency 50            # all users in the file
@@ -187,36 +187,20 @@ def main():
     if not users:
         raise SystemExit(f"No users in {args.users}")
 
-    os.makedirs(RESULTS_DIR, exist_ok=True)
-    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    csv_path = os.path.join(RESULTS_DIR, f"load_test_{stamp}.csv")
-    fields = ["username"] + sum(([s, f"{s}_ms"] for s in STEPS), []) + ["login_resp", "center_id", "centers_n", "customers_total", "error"]
-
     print(f"🌐 {BASE_URL}")
-    print(f"👥 {len(users)} users · concurrency {args.concurrency} · date {args.date}")
-    print(f"📁 {csv_path}\n")
+    print(f"👥 {len(users)} users · concurrency {args.concurrency} · date {args.date}\n")
 
     rows = []
     done = 0
     t0 = time.time()
-    with open(csv_path, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
-        writer.writeheader()
+    if True:  # per-user CSV output disabled — only the total-run summary is shown
         with ThreadPoolExecutor(max_workers=args.concurrency) as pool:
             futures = {pool.submit(run_user, u, args.date, args.timeout): u for u in users}
             for fut in as_completed(futures):
                 row = fut.result()
                 rows.append(row)
-                writer.writerow(row)
                 done += 1
-                mark = "✅" if row["login"] == 200 and not row["error"] else "❌"
-                lines = [f"{mark} {done:>5}/{len(users)}  {row['username']:<34} "
-                         f"login={row['login']}  resp=[{row['login_resp']}]  "
-                         f"{row['centers_n'] or 0} center(s)"
-                         f"{(', ' + str(row['customers_total']) + ' customers') if row['customers_total'] != '' else ''}"]
-                for name, cid, n in row.get("_detail", []):
-                    lines.append(f"        • {name} ({cid}): {n} customer(s)")
-                print("\n".join(lines))
+                # Per-user lines are not printed — only the total-run summary is shown at the end.
 
     wall = time.time() - t0
     print(f"\n{'=' * 60}\n📊 SUMMARY — {len(rows)} users in {wall:.1f}s "
@@ -235,7 +219,6 @@ def main():
     ok = sum(1 for r in rows if r["login"] == 200 and not r["error"])
     with_centers = sum(1 for r in rows if isinstance(r["centers_n"], int) and r["centers_n"] > 0)
     print(f"\n  ✅ {ok}/{len(rows)} fully OK · {with_centers} had centers · errors: {len(rows) - ok}")
-    print(f"  📁 {csv_path}")
 
 
 if __name__ == "__main__":

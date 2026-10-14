@@ -466,23 +466,8 @@ def build_payment_payload(center_id, dues: list) -> dict:
 
 
 def save_payment_log(username, center_id, payload: dict, status=None, response=None):
-    """Write the make-payments request payload + response body to results/ as JSON."""
-    os.makedirs(RESULTS_DIR, exist_ok=True)
-    stamp = time.strftime("%Y%m%d_%H%M%S")
-    path = os.path.join(RESULTS_DIR, f"make_payments_{COLLECTION_DATE}_{center_id}_{stamp}.json")
-    record = {
-        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "username": username,
-        "center_id": str(center_id),
-        "endpoint": MAKE_PAYMENTS_ENDPOINT,
-        "submitted": SUBMIT_PAYMENTS,
-        "status": status,
-        "request_payload": payload,
-        "response_body": response,
-    }
-    with open(path, "w") as f:
-        json.dump(record, f, indent=4)
-    print(f"  💾 Saved make-payments log: {path}")
+    """Make-payments logs are NOT saved to disk (disabled by request)."""
+    return
 
 
 def make_payments(request, auth_headers: dict, username, center_id, dues: list) -> bool:
