@@ -20,9 +20,10 @@ import time
 # ============================================================
 # CONFIGURATION
 # ============================================================
-BASE_URL = "https://esaf-dev-api.esthenos.com"
-# BASE_URL = "https://gravity-sit-api.esafbank.com"
-# BASE_URL = "https://gravity-api.esaf.bank.in"
+# BASE_URL = "https://esaf-dev-api.esthenos.com"  #DEV
+# BASE_URL = "https://gravity-sit-api.esafbank.com" #SIT
+# BASE_URL = "https://guat-api.esafbank.com" #UAT
+BASE_URL = "https://gravity-api.esaf.bank.in"  #PROD
 
 LOGIN_ENDPOINT = f"{BASE_URL}/api/v1/token/sourcing"
 
@@ -48,9 +49,9 @@ USERS_OFFSET = 0   # Skip this many users from the top
 TOTAL_USERS = 1
 
 BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
-USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_DEV_FO.txt"))
+# USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_DEV_FO.txt"))
 # USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_SIT_FO.txt"))
-# USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_UAT_FO.txt"))
+USERS_FILE  = os.path.abspath(os.path.join(BASE_DIR, "..", "DATA", "emails_UAT_FO.txt"))
 
 PRODUCTS_CATEGORIES_ENDPOINT = f"{BASE_URL}/api/v1/products-categories"
 WORKFLOW_GL_ENDPOINT         = f"{BASE_URL}/api/v1/workflow/RMFL"
@@ -76,7 +77,9 @@ MAX_CUSTOMERS_PER_CENTER = 1
 
 CENTER_ID_FIELDS   = ["center_id", "id", "_id"]
 CUSTOMER_ID_FIELDS = ["customer_id", "id", "_id"]
-LAST_STATUS = {}  # API name -> last HTTP status, filled by call_get_api for run summaries
+from flow_common import ThreadDict  # per-thread, safe under the concurrent runner
+LAST_STATUS = ThreadDict()  # API name -> last HTTP status, filled by call_get_api for run summaries
+LAST_MS = ThreadDict()      # API name -> last response time in ms, filled by call_get_api
 LIST_KEYS = ("centers_list", "customers_list", "customer_list", "data", "result",
              "centers", "center_list", "customers", "applications", "list", "results")
 
@@ -243,8 +246,9 @@ def call_get_api(request, name: str, endpoint: str, headers: dict):
 
     start = time.time()
     res = request.get(endpoint, headers=headers)
-    resp_json, _ = log_api(name, res.status, res.text(), start)
+    resp_json, dur = log_api(name, res.status, res.text(), start)
     LAST_STATUS[name] = res.status
+    LAST_MS[name] = round(dur * 1000)
 
     return res, resp_json
 

@@ -8,7 +8,7 @@ Mobile collection flow for one FO user (same order as the app):
   5. GET  /api/v1/collection/dashboard/center
   6. GET  /api/v1/collection/menu
   7. GET  /api/v1/collections/centers?collection_date=...&loan_type=center   -> pick a center_id
-  8. GET  /api/v2/collections?collection_date=...&modified_after=...&loan_type=center&center_id=...
+  8. GET  /api/v2/collections?collection_date=...&loan_type=center&center_id=...
   9. POST /api/v1/make-payments                         -> built from step 8's data
  10. GET  /api/v1/cash_remittance?remittance_id=...     -> status of the remittance just created
 """
@@ -28,7 +28,8 @@ import time
 # ============================================================
 # BASE_URL = "https://esaf-dev-api.esthenos.com"
 # BASE_URL = "https://gravity-sit-api.esafbank.com"
-BASE_URL = "https://gravity-api.esaf.bank.in"
+BASE_URL = "https://gravity-api.esaf.bank.in"  # PROD
+# BASE_URL = "https://guat-api.esafbank.com"  # UAT
 
 LOGIN_ENDPOINT = f"{BASE_URL}/api/v1/token/sourcing"
 
@@ -81,7 +82,10 @@ SUBMIT_PAYMENTS = True
 LOAN_ID_FIELD = "application_id"
 
 CENTER_ID_FIELDS = ["center_id", "id", "_id"]
-LAST_STATUS = {}  # API name -> last HTTP status, filled by call_get_api for run summaries
+from flow_common import ThreadDict  # per-thread, safe under the concurrent runner
+LAST_STATUS = ThreadDict()  # API name -> last HTTP status, filled by call_get_api for run summaries
+LAST_MS = ThreadDict()      # API name -> last response time in ms, filled by call_get_api
+LAST_PAID = ThreadDict()    # "amount"/"loans" confirmed by the last make-payments, filled by record_payment
 LIST_KEYS = ("centers_list", "collections_list", "data", "result", "centers", "center_list", "collections", "list")
 
 
@@ -243,7 +247,9 @@ def call_api(request, name: str, endpoint: str, headers: dict, payload: dict, en
 
     start = time.time()
     res = request.post(endpoint, headers=headers, data=body)
-    resp_json, _ = log_api(name, res.status, res.text(), start)
+    resp_json, dur = log_api(name, res.status, res.text(), start)
+    LAST_STATUS[name] = res.status
+    LAST_MS[name] = round(dur * 1000)
 
     return res, resp_json
 
@@ -253,8 +259,9 @@ def call_get_api(request, name: str, endpoint: str, headers: dict):
 
     start = time.time()
     res = request.get(endpoint, headers=headers)
-    resp_json, _ = log_api(name, res.status, res.text(), start)
+    resp_json, dur = log_api(name, res.status, res.text(), start)
     LAST_STATUS[name] = res.status
+    LAST_MS[name] = round(dur * 1000)
 
     return res, resp_json
 
@@ -418,8 +425,12 @@ def get_collection_centers(request, auth_headers: dict) -> list:
 def pending_centers_by_demand(centers: list) -> list:
     """Centers that can be paid, smallest total_demand first: skip centers with
     nothing pending (already collected) or no demand."""
+    # Also skip any center the server says was already collected from today
+    # (collected_today > 0): our paid_loans record can be incomplete (e.g. a run
+    # killed mid-save), and the backend accepts a second payment for a loan.
     pending = [c for c in centers
-               if (c.get("pending_collection") or 0) > 0 and (c.get("total_demand") or 0) > 0]
+               if (c.get("pending_collection") or 0) > 0 and (c.get("total_demand") or 0) > 0
+               and not (c.get("collected_today") or 0) > 0]
     return sorted(pending, key=lambda c: c["total_demand"])
 
 
@@ -445,7 +456,8 @@ def get_collection_center_id(centers: list):
 def get_collections(request, auth_headers: dict, center_id):
     endpoint = (
         f"{COLLECTIONS_ENDPOINT}?collection_date={COLLECTION_DATE}"
-        f"&modified_after={modified_after()}"
+        # no modified_after: it filters to loans changed after that time, so
+        # passing "now" (or 0) returns "No collections found" for every center.
         f"&loan_type={LOAN_TYPE}&center_id={center_id}"
     )
     res, resp_json = call_get_api(request, "COLLECTIONS", endpoint, auth_headers)
@@ -478,7 +490,8 @@ def get_collections(request, auth_headers: dict, center_id):
 def get_center_customers(request, auth_headers: dict, center_id) -> list:
     endpoint = (
         f"{COLLECTIONS_ENDPOINT}?collection_date={COLLECTION_DATE}"
-        f"&modified_after={modified_after()}"
+        # no modified_after: it filters to loans changed after that time, so
+        # passing "now" (or 0) returns "No collections found" for every center.
         f"&loan_type={LOAN_TYPE}&center_id={center_id}"
     )
     res, resp_json = call_get_api(request, f"CUSTOMERS {center_id}", endpoint, auth_headers)
@@ -613,21 +626,36 @@ def record_payment(dues: list, username, center_id, status, response, date: str 
     with _PAID_LOCK:
         paid = load_paid_loans(date)
         resp = response if isinstance(response, dict) else {}
+        amounts = {c["application_id"]: c.get("total_demand") for c in dues}
+        LAST_PAID["amount"], LAST_PAID["loans"] = 0.0, 0
         for a in resp.get("applications_status") or []:
             if a.get("is_successful") and a.get("application_id"):
+                LAST_PAID["amount"] += float(amounts.get(a["application_id"]) or 0)
+                LAST_PAID["loans"] += 1
                 paid[a["application_id"]] = {
                     "center_id": str(center_id), "customer_name": a.get("customer_name"),
+                    "amount": amounts.get(a["application_id"]),
                     "remittance_id": a.get("remittance_id"), "username": username, "paid_at": stamp,
                 }
-        if status is None:
+        # No response, or a gateway/server error (e.g. 504 after 60s): the payment
+        # may still have gone through on the server, so never retry these loans.
+        if status is None or status >= 500:
+            LAST_PAID["uncertain"] = sum(float(c.get("total_demand") or 0) for c in dues)
             for c in dues:
                 paid.setdefault(c["application_id"], {
                     "center_id": str(center_id), "customer_name": c.get("customer_name"),
+                    "amount": c.get("total_demand"),
                     "remittance_id": None, "username": username, "paid_at": stamp,
                     "uncertain": True,
                 })
-        with open(paid_loans_path(date), "w") as f:
+        # Atomic save: write a temp file, then rename over the record, so a run
+        # killed mid-save can never leave a truncated (unreadable) record.
+        tmp = paid_loans_path(date) + ".tmp"
+        with open(tmp, "w") as f:
             json.dump(paid, f, indent=4)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, paid_loans_path(date))
         _IN_FLIGHT.difference_update(c["application_id"] for c in dues)
 
 
